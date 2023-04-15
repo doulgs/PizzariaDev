@@ -35,7 +35,12 @@ export default function Home() {
         <title>DevPizza - Faça seu Login</title>
       </Head>
       <div className={styles.containerCenter}>
-        <Image src={logoImg} alt="logo" />
+        <Image
+          src={logoImg}
+          alt="logo"
+          className={styles.img}
+          // style={{ width: "80%", height: "100%" }}
+        />
 
         <div className={styles.login}>
           <form onSubmit={handleLogin}>

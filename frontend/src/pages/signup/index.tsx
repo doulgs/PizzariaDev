@@ -15,7 +15,11 @@ export default function SignUp() {
         <title>Faça seu Cadastro</title>
       </Head>
       <div className={styles.containerCenter}>
-        <Image src={logoImg} alt="logo" />
+        <Image
+          src={logoImg}
+          alt="logo"
+          style={{ width: "80%", height: "100%" }}
+        />
 
         <div className={styles.login}>
           <h1>Criando sua Conta</h1>
