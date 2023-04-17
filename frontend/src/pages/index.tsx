@@ -5,11 +5,11 @@ import logoImg from "../../public/logo.svg";
 import Image from "next/image";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-
 import Link from "next/link";
-
 import { AuthContext } from "../context/AuthContext";
-
+import { toast } from "react-toastify";
+import { GetServerSideProps } from "next";
+import { canSSRGuest } from "@/utils/canSSRGuest";
 export default function Home() {
   const { signIn } = useContext(AuthContext);
 
@@ -21,12 +21,20 @@ export default function Home() {
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
 
+    if (email === "" || password === "") {
+      return toast.warning("Prencha todos os campos");
+    }
+
+    setLoading(true);
+
     let data = {
       email,
       password,
     };
 
     await signIn(data);
+
+    setLoading(false);
   }
 
   return (
@@ -58,7 +66,7 @@ export default function Home() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <Button type="submit" loading={false}>
+            <Button type="submit" loading={loading}>
               Acessar
             </Button>
           </form>
@@ -71,3 +79,8 @@ export default function Home() {
     </>
   );
 }
+
+//Verifica se esta logado e faz o redireccion
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+  return { props: {} };
+});
