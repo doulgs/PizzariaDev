@@ -10,7 +10,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <Component {...pageProps} />
-      <ToastContainer autoClose={3000} theme="dark" />
+      <ToastContainer autoClose={2000} position="bottom-center" theme="dark" />
     </AuthProvider>
   );
 }
