@@ -3,6 +3,7 @@ import { destroyCookie, parseCookies, setCookie } from "nookies";
 import Router from "next/router";
 import { api } from "../services/apiClient";
 import { toast } from "react-toastify";
+import { error } from "console";
 
 type AuthContextData = {
   user: UserProps | undefined;
@@ -50,7 +51,17 @@ export function AuthProvider({ children }: AuthProvaiderProps) {
   useEffect(() => {
     const { "@nextauth.token": token } = parseCookies();
     if (token) {
-      api.get("/me").then(response);
+      api
+        .get("/me")
+        .then((response) => {
+          const { id, name, email } = response.data;
+
+          setUser({ id, name, email });
+        })
+        .catch(() => {
+          //deslogar o user
+          signOut();
+        });
     }
   }, []);
 
@@ -82,7 +93,7 @@ export function AuthProvider({ children }: AuthProvaiderProps) {
 
       toast.success("Acesso consedido com sucesso");
 
-      Router.push("/deshboard");
+      Router.push("/dashboard");
     } catch (err) {
       toast.error("Acesso negado");
       console.log("Erro ao acessar", err);
