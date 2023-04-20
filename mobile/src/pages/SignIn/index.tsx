@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { Feather } from "@expo/vector-icons";
+import { Snackbar } from "react-native-paper";
 import {
   View,
   Text,
@@ -6,17 +9,24 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 
 export default function SignIn() {
+  const [visible, setVisible] = useState(false);
+  const onToggleSnackBar = () => setVisible(!visible);
+  const onDismissSnackBar = () => setVisible(false);
+
+  const { signIn, loadingAuth } = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
     if (email === "" || password === "") {
-      return;
+      return onToggleSnackBar();
     }
-    alert("Teste");
+    await signIn({ email, password });
   }
 
   return (
@@ -43,9 +53,30 @@ export default function SignIn() {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Acessar</Text>
+          {loadingAuth ? (
+            <ActivityIndicator size={25} color="#FFF" />
+          ) : (
+            <Text style={styles.buttonText}>Acessar</Text>
+          )}
         </TouchableOpacity>
       </View>
+
+      <Snackbar
+        duration={3000}
+        style={{
+          marginBottom: 30,
+          marginHorizontal: 30,
+          backgroundColor: "#101026",
+          borderRadius: 8,
+        }}
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: "Fechar",
+        }}
+      >
+        Dados de Login Invalidos
+      </Snackbar>
     </View>
   );
 }

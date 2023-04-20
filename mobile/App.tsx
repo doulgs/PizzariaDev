@@ -3,6 +3,8 @@ import { StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Routes from "./src/routes";
 
+import { AuthProvider } from "./src/contexts/AuthContext";
+
 export default function App() {
   return (
     <>
@@ -12,7 +14,9 @@ export default function App() {
         translucent={false}
       />
       <NavigationContainer>
-        <Routes />
+        <AuthProvider>
+          <Routes />
+        </AuthProvider>
       </NavigationContainer>
     </>
   );
