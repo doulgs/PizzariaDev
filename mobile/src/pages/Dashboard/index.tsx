@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { api } from "../../services/api";
 import {
   View,
   StyleSheet,
@@ -6,9 +7,38 @@ import {
   TouchableOpacity,
   TextInput,
   Text,
+  ActivityIndicator,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
+
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackPramsList } from "../../routes/app.routes";
+
 export default function Dashboard() {
+  const navigation = useNavigation<NativeStackNavigationProp<StackPramsList>>();
+  const [loading, setLoading] = useState(false);
+  const [number, setNumber] = useState("");
+
+  async function openOrder() {
+    setLoading(true);
+    if (number === "") {
+      return;
+    }
+
+    const response = await api.post("/order", {
+      table: Number(number),
+    });
+
+    navigation.navigate("Order", {
+      number: number,
+      order_id: response.data.id,
+    });
+
+    setNumber("");
+    setLoading(false);
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Novo Pedido</Text>
@@ -18,10 +48,20 @@ export default function Dashboard() {
         placeholder="Digite o Numero da Mesa"
         placeholderTextColor="#f0f0f0"
         keyboardType="numeric"
+        value={number}
+        onChangeText={setNumber}
       />
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>ABRIR MESA</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={openOrder}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator size={27} color="#fbc02d" />
+        ) : (
+          <Text style={styles.buttonText}>ABRIR MESA</Text>
+        )}
       </TouchableOpacity>
     </SafeAreaView>
   );
